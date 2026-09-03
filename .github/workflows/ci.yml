@@ -17,8 +17,8 @@ jobs:
       matrix:
         node-version: ['22.22.0', '24']
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node-version }}
           cache: npm
@@ -35,7 +35,7 @@ jobs:
     needs: quality
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - run: docker build --file test/n8n/Dockerfile --tag n8n-vtiger-oss-test .
       - name: Verify package uses host n8n API
         run: >-

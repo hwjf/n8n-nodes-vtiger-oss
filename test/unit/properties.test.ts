@@ -322,3 +322,16 @@ test('exposes all operations to AI tools', () => {
 	);
 	assert.equal(queryRelated?.displayOptions, undefined);
 });
+
+test('offers controlled output for actions that can return large records', () => {
+	const output = actionProperties.find((property) => property.name === 'output');
+	assert.equal(output?.default, 'simplified');
+	assert.deepEqual(
+		output?.options?.map((option) => ('value' in option ? option.value : undefined)),
+		['simplified', 'raw', 'selected'],
+	);
+	assert.equal(hasProperty('record', 'retrieve', 'output'), true);
+	assert.equal(hasProperty('query', 'rawQuery', 'output'), true);
+	assert.equal(hasProperty('relation', 'retrieveRelated', 'output'), true);
+	assert.equal(hasProperty('record', 'delete', 'output'), false);
+});

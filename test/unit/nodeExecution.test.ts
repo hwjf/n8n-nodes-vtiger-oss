@@ -18,7 +18,8 @@ function createContext(
 			apiKey: 'secret',
 			allowInsecureHttp: false,
 		}),
-		getNodeParameter: (name: string, itemIndex: number) => parameters[name][itemIndex],
+		getNodeParameter: (name: string, itemIndex: number, fallback?: unknown) =>
+			parameters[name]?.[itemIndex] ?? fallback,
 		getNode: () => ({
 			name: 'Vtiger Open Source',
 			type: 'n8n-nodes-vtiger-oss.vtigerOss',
@@ -109,6 +110,60 @@ test('continueOnFail returns an item error and continues', async () => {
 	assert.ok(output[0].error);
 	assert.deepEqual(output[0].pairedItem, 0);
 	assert.equal(output[1].json.id, '12x2');
+});
+
+test('returns the standard confirmation after deleting a record', async () => {
+	let deletedId = '';
+	const context = createContext(
+		[{ json: {} }],
+		async (options) => {
+			if (options.qs?.operation === 'getchallenge') {
+				return { success: true, result: { token: 'token' } };
+			}
+			const body = options.body as URLSearchParams;
+			if (body.get('operation') === 'login') {
+				return { success: true, result: { sessionName: 'session' } };
+			}
+			deletedId = body.get('id') ?? '';
+			return { success: true, result: true };
+		},
+		{
+			resource: ['record'],
+			operation: ['delete'],
+			recordId: ['12x1'],
+		},
+	);
+
+	const [output] = await new VtigerOss().execute.call(context);
+
+	assert.equal(deletedId, '12x1');
+	assert.deepEqual(output[0].json, { deleted: true });
+});
+
+test('applies selected output fields to supported actions', async () => {
+	const context = createContext(
+		[{ json: {} }],
+		async (options) => {
+			if (options.qs?.operation === 'getchallenge') {
+				return { success: true, result: { token: 'token' } };
+			}
+			if ((options.body as URLSearchParams | undefined)?.get('operation') === 'login') {
+				return { success: true, result: { sessionName: 'session' } };
+			}
+			return { success: true, result: { id: '12x1', firstname: 'Ada', email: 'ada@example.com' } };
+		},
+		{
+			resource: ['record'],
+			operation: ['retrieve'],
+			recordId: ['12x1'],
+			output: ['selected'],
+			fieldsToInclude: ['id, email'],
+		},
+	);
+
+	const [output] = await new VtigerOss().execute.call(context);
+
+	assert.deepEqual(output[0].json, { id: '12x1', email: 'ada@example.com' });
 });
 
 test('revise sends only provided fields and the trusted record ID', async () => {

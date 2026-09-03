@@ -39,6 +39,19 @@ as long as you supply the full payload the installation expects.
   value you want to keep.
 
 Use **Update Fields** unless you specifically need the full-update behavior.
+After a successful **Delete**, the node returns `{ "deleted": true }`.
+
+### Output
+
+Actions that return records or metadata provide three output modes:
+
+- **Simplified** is the default. It returns up to ten top-level fields and prioritizes common
+  identity fields such as `id`, names, labels, and email addresses.
+- **Raw** returns every top-level field provided by Vtiger.
+- **Selected Fields** returns only the comma-separated top-level fields you request.
+
+Each record in a list remains a separate n8n item. File downloads and action confirmations are not
+filtered by these modes.
 
 ### Quotes, Invoices, Sales Orders, and Purchase Orders
 

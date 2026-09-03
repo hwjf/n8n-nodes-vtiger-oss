@@ -8,6 +8,8 @@ import { NodeConnectionTypes, NodeOperationError } from 'n8n-workflow';
 import { actionProperties } from './actions/properties';
 import { routeAction } from './actions/router';
 import { asOutputItems } from './actions/types';
+import { actionSupportsOutput, formatOutput, parseSelectedFields } from './helpers/output';
+import type { OutputMode } from './helpers/output';
 import { VtigerClient } from './transport/client';
 import { testVtigerCredentials } from './transport/credentialTest';
 
@@ -51,9 +53,22 @@ export class VtigerOss implements INodeType {
 
 		for (let itemIndex = 0; itemIndex < inputItems.length; itemIndex++) {
 			try {
+				const resource = this.getNodeParameter('resource', itemIndex) as string;
+				const operation = this.getNodeParameter('operation', itemIndex) as string;
 				const result = await routeAction({ context: this, client, itemIndex });
+				const outputMode = actionSupportsOutput(resource, operation)
+					? (this.getNodeParameter('output', itemIndex, 'simplified') as OutputMode)
+					: 'raw';
+				const selectedFields =
+					outputMode === 'selected'
+						? parseSelectedFields(this.getNodeParameter('fieldsToInclude', itemIndex, ''))
+						: [];
 				for (const output of asOutputItems(result)) {
-					outputItems.push({ ...output, pairedItem: itemIndex });
+					outputItems.push({
+						...output,
+						json: formatOutput(output.json, outputMode, selectedFields),
+						pairedItem: itemIndex,
+					});
 				}
 			} catch (error) {
 				const nodeError = new NodeOperationError(
