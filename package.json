@@ -1,6 +1,6 @@
 {
 	"name": "n8n-nodes-vtiger-oss",
-	"version": "0.1.1",
+	"version": "0.1.2",
 	"description": "n8n community node for Vtiger CRM Open Source 8.x",
 	"license": "MIT",
 	"homepage": "https://github.com/hwjf/n8n-nodes-vtiger-oss#readme",
@@ -11,8 +11,9 @@
 		"vtiger-crm"
 	],
 	"author": {
-		"name": "hwjf",
-		"email": "hwjf@users.noreply.github.com"
+		"name": "Jürgen Faßmann",
+		"email": "juergen.fassmann@hardwarewartung.com",
+		"url": "https://github.com/hwjf"
 	},
 	"repository": {
 		"type": "git",
