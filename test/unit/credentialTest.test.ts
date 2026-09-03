@@ -2,7 +2,32 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import type { ICredentialTestFunctions } from 'n8n-workflow';
+import { VtigerOssApi } from '../../credentials/VtigerOssApi.credentials';
 import { testVtigerCredentials } from '../../nodes/VtigerOss/transport/credentialTest';
+
+test('credential definition exposes a declarative connection test', () => {
+	assert.deepEqual(new VtigerOssApi().test, {
+		request: {
+			baseURL: '={{$credentials.baseUrl}}',
+			url: '/webservice.php',
+			method: 'GET',
+			qs: {
+				operation: 'getchallenge',
+				username: '={{$credentials.username}}',
+			},
+		},
+		rules: [
+			{
+				type: 'responseSuccessBody',
+				properties: {
+					message: 'Vtiger rejected the username or base URL',
+					key: 'success',
+					value: true,
+				},
+			},
+		],
+	});
+});
 
 test('credential test performs challenge, form login, and metadata request', async () => {
 	const requests: Record<string, unknown>[] = [];

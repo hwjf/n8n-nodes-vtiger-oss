@@ -1,4 +1,4 @@
-import type { Icon, ICredentialType, INodeProperties } from 'n8n-workflow';
+import type { Icon, ICredentialTestRequest, ICredentialType, INodeProperties } from 'n8n-workflow';
 
 export class VtigerOssApi implements ICredentialType {
 	name = 'vtigerOssApi';
@@ -48,4 +48,26 @@ export class VtigerOssApi implements ICredentialType {
 				'Whether to allow unencrypted HTTP connections. Enable only for isolated development systems.',
 		},
 	];
+
+	test: ICredentialTestRequest = {
+		request: {
+			baseURL: '={{$credentials.baseUrl}}',
+			url: '/webservice.php',
+			method: 'GET',
+			qs: {
+				operation: 'getchallenge',
+				username: '={{$credentials.username}}',
+			},
+		},
+		rules: [
+			{
+				type: 'responseSuccessBody',
+				properties: {
+					message: 'Vtiger rejected the username or base URL',
+					key: 'success',
+					value: true,
+				},
+			},
+		],
+	};
 }

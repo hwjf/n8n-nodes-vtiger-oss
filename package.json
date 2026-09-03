@@ -1,6 +1,6 @@
 {
 	"name": "n8n-nodes-vtiger-oss",
-	"version": "0.1.2",
+	"version": "0.1.3",
 	"description": "n8n community node for Vtiger CRM Open Source 8.x",
 	"license": "MIT",
 	"homepage": "https://github.com/hwjf/n8n-nodes-vtiger-oss#readme",
