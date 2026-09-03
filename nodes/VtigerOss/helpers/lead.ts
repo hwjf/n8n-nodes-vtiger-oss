@@ -1,7 +1,7 @@
 import type { IDataObject } from 'n8n-workflow';
 import { VtigerApiError } from '../transport/errors';
 import { parseJsonObject } from './serialization';
-import { validateWebserviceId } from './webserviceId';
+import { isWebserviceId, validateWebserviceId } from './webserviceId';
 
 export interface LeadConversionOptions {
 	leadId: string;
@@ -95,11 +95,7 @@ export function validateLeadConversionResult(
 				'convertlead',
 			);
 		}
-		try {
-			validateWebserviceId(id);
-		} catch {
-			// This helper has no n8n execution context; the caller wraps the domain error.
-			// eslint-disable-next-line @n8n/community-nodes/require-node-api-error
+		if (!isWebserviceId(id)) {
 			throw new VtigerApiError(
 				`Lead conversion returned an invalid Vtiger webservice ID for module ${entity}`,
 				'convertlead',

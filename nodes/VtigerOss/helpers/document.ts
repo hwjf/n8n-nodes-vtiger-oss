@@ -95,26 +95,13 @@ export async function linkUploadedDocument(
 	sourceRecordId: string,
 	relatedListLabel: string,
 ): Promise<unknown> {
-	try {
-		return await client.request({
-			method: 'POST',
-			operation: 'add_related',
-			parameters: {
-				sourceRecordId,
-				relatedRecordId: documentId,
-				relationIdLabel: relatedListLabel,
-			},
-		});
-	} catch (error) {
-		const apiError = error instanceof VtigerApiError ? error : undefined;
-		const detail = apiError ? `: ${apiError.message}` : '';
-		// This helper has no n8n execution context; the caller wraps the domain error.
-		// eslint-disable-next-line @n8n/community-nodes/require-node-api-error
-		throw new VtigerApiError(
-			`Document ${documentId} was uploaded, but linking it to record ${sourceRecordId} failed${detail}`,
-			'add_related',
-			apiError?.code,
-			apiError?.statusCode,
-		);
-	}
+	return await client.request({
+		method: 'POST',
+		operation: 'add_related',
+		parameters: {
+			sourceRecordId,
+			relatedRecordId: documentId,
+			relationIdLabel: relatedListLabel,
+		},
+	});
 }

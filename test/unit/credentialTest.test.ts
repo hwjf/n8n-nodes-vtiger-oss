@@ -8,7 +8,7 @@ test('credential test performs challenge, form login, and metadata request', asy
 	const requests: Record<string, unknown>[] = [];
 	const context = {
 		helpers: {
-			request: async (options: Record<string, unknown>) => {
+			httpRequest: async (options: Record<string, unknown>) => {
 				requests.push(options);
 				if (requests.length === 1) return { success: true, result: { token: 'token' } };
 				if (requests.length === 2) return { success: true, result: { sessionName: 'session' } };
@@ -31,7 +31,7 @@ test('credential test performs challenge, form login, and metadata request', asy
 
 	assert.deepEqual(result, { status: 'OK', message: 'Connection successful' });
 	assert.equal(requests.length, 3);
-	assert.deepEqual(requests[1].form, {
+	assert.deepEqual(Object.fromEntries((requests[1].body as URLSearchParams).entries()), {
 		operation: 'login',
 		username: 'api-user',
 		// The value is a deterministic challenge hash fixture, not a credential.

@@ -14,21 +14,10 @@ export async function testVtigerCredentials(
 ): Promise<INodeCredentialTestResult> {
 	try {
 		const credentials = parseCredentials(credential.data ?? {});
-		const request = async (options: IHttpRequestOptions) => {
-			// ICredentialTestFunctions currently exposes only the legacy request helper.
-			// eslint-disable-next-line @n8n/community-nodes/no-deprecated-workflow-functions
-			return await this.helpers.request({
-				uri: options.url,
-				method: options.method,
-				qs: options.qs,
-				form:
-					options.body instanceof URLSearchParams
-						? Object.fromEntries(options.body.entries())
-						: undefined,
-				json: true,
-				timeout: options.timeout,
-			});
+		const helpers = this.helpers as typeof this.helpers & {
+			httpRequest: (options: IHttpRequestOptions) => Promise<unknown>;
 		};
+		const request = async (options: IHttpRequestOptions) => await helpers.httpRequest(options);
 		const session = await authenticate(request, credentials);
 		const response = await request({
 			method: 'GET',

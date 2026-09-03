@@ -12,12 +12,13 @@ export function createChallengeHash(token: string, apiKey: string): string {
 }
 
 export function normalizeBaseUrl(baseUrl: string, allowInsecureHttp = false): string {
-	let parsed: URL;
+	let parsed: URL | undefined;
 	try {
 		parsed = new URL(baseUrl);
 	} catch {
-		// Authentication is also used by credential tests, where no node context is available.
-		// eslint-disable-next-line @n8n/community-nodes/require-node-api-error
+		parsed = undefined;
+	}
+	if (!parsed) {
 		throw new VtigerApiError('The Vtiger base URL is invalid', 'login');
 	}
 

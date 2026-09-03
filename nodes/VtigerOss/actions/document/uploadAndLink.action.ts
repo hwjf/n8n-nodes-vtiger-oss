@@ -1,3 +1,4 @@
+import { NodeOperationError } from 'n8n-workflow';
 import { linkUploadedDocument, validateRelatedListLabel } from '../../helpers/document';
 import { validateWebserviceId } from '../../helpers/webserviceId';
 import type { ActionHandler } from '../types';
@@ -13,11 +14,20 @@ export const uploadAndLink: ActionHandler = async (actionContext) => {
 	);
 
 	const uploaded = await uploadDocument(actionContext);
-	const relation = await linkUploadedDocument(
-		client,
-		uploaded.documentId,
-		sourceRecordId,
-		relatedListLabel,
-	);
+	let relation: unknown;
+	try {
+		relation = await linkUploadedDocument(
+			client,
+			uploaded.documentId,
+			sourceRecordId,
+			relatedListLabel,
+		);
+	} catch (error) {
+		const detail = error instanceof Error ? `: ${error.message}` : '';
+		throw new NodeOperationError(
+			context.getNode(),
+			`Document ${uploaded.documentId} was uploaded, but linking it to record ${sourceRecordId} failed${detail}`,
+		);
+	}
 	return { ...uploaded, sourceRecordId, relatedListLabel, relation };
 };

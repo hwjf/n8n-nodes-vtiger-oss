@@ -4,11 +4,13 @@ import { VtigerApiError } from '../transport/errors';
 export function parseJsonObject(value: unknown, parameterName: string): IDataObject {
 	let parsed = value;
 	if (typeof value === 'string') {
+		let invalidJson = false;
 		try {
 			parsed = JSON.parse(value);
 		} catch {
-			// This helper has no n8n execution context; the caller wraps the domain error.
-			// eslint-disable-next-line @n8n/community-nodes/require-node-api-error
+			invalidJson = true;
+		}
+		if (invalidJson) {
 			throw new VtigerApiError(`${parameterName} must contain valid JSON`, 'serialization');
 		}
 	}
