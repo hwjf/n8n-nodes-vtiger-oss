@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: ['22.22.0', '24']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+      - run: npm ci
+      - run: npm run format:check
+      - run: npm run lint
+      - run: npm test
+      - run: npm run test:coverage
+        if: matrix.node-version == '24'
+      - run: npm run build
+      - run: npm pack --dry-run --json
+
+  n8n-package-image:
+    needs: quality
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build --file test/n8n/Dockerfile --tag n8n-vtiger-oss-test .
+      - name: Verify package uses host n8n API
+        run: >-
+          docker run --rm --entrypoint node
+          --workdir /home/node/.n8n/nodes/node_modules/n8n-nodes-vtiger-oss
+          n8n-vtiger-oss-test -e
+          "const resolved = require.resolve('n8n-workflow');
+          if (!resolved.startsWith('/usr/local/lib/node_modules/n8n/')) throw new Error(resolved);
+          const { VtigerOss } = require('./dist/nodes/VtigerOss/VtigerOss.node.js');
+          if (new VtigerOss().description.name !== 'vtigerOss') throw new Error('Node load failed');"

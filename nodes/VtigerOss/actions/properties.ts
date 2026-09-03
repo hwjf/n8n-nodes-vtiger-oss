@@ -1,0 +1,633 @@
+import type { INodeProperties } from 'n8n-workflow';
+
+export const actionProperties: INodeProperties[] = [
+	{
+		displayName: 'Resource',
+		name: 'resource',
+		type: 'options',
+		noDataExpression: true,
+		options: [
+			{ name: 'Advanced', value: 'advanced' },
+			{ name: 'Document', value: 'document' },
+			{ name: 'Lead', value: 'lead' },
+			{ name: 'Module', value: 'metadata' },
+			{ name: 'Query', value: 'query' },
+			{ name: 'Record', value: 'record' },
+			{ name: 'Related Record', value: 'relation' },
+		],
+		default: 'record',
+	},
+	{
+		displayName: 'Operation',
+		name: 'operation',
+		type: 'options',
+		noDataExpression: true,
+		displayOptions: { show: { resource: ['advanced'] } },
+		options: [
+			{
+				name: 'Custom GET',
+				value: 'customGet',
+				action: 'Call a custom GET operation',
+				description: 'Call an operation registered for HTTP GET',
+			},
+			{
+				name: 'Custom POST',
+				value: 'customPost',
+				action: 'Call a custom POST operation',
+				description: 'Call an operation registered for HTTP POST',
+			},
+		],
+		default: 'customGet',
+	},
+	{
+		displayName: 'Operation',
+		name: 'operation',
+		type: 'options',
+		noDataExpression: true,
+		displayOptions: { show: { resource: ['lead'] } },
+		options: [
+			{
+				name: 'Convert',
+				value: 'convert',
+				action: 'Convert a lead',
+				description: 'Convert a lead into the selected account, contact, and potential records',
+			},
+		],
+		default: 'convert',
+	},
+	{
+		displayName: 'Operation',
+		name: 'operation',
+		type: 'options',
+		noDataExpression: true,
+		displayOptions: { show: { resource: ['document'] } },
+		options: [
+			{
+				name: 'Download Attachment',
+				value: 'download',
+				action: 'Download an attachment',
+				description:
+					'Download the file or files identified by an Attachment Download ID and return each as n8n binary data',
+			},
+			{
+				name: 'Upload',
+				value: 'upload',
+				action: 'Upload a binary file as a document',
+				description:
+					'Create a Vtiger Documents record from n8n binary data and store the file internally in Vtiger',
+			},
+			{
+				name: 'Upload and Link to Record',
+				value: 'uploadAndLink',
+				action: 'Upload a binary file as a document and link it to a record',
+				description:
+					'Create a Vtiger Documents record from n8n binary data, then link it to an existing record through the selected related list. If linking fails, the created Document remains in Vtiger.',
+			},
+		],
+		default: 'upload',
+	},
+	{
+		displayName: 'Operation',
+		name: 'operation',
+		type: 'options',
+		noDataExpression: true,
+		displayOptions: { show: { resource: ['metadata'] } },
+		options: [
+			{
+				name: 'Describe Module',
+				value: 'describe',
+				action: 'Describe a module',
+				description:
+					"Get field and capability metadata for a module using Vtiger's describe operation",
+			},
+			{
+				name: 'List Accessible Modules',
+				value: 'listTypes',
+				action: 'List accessible modules',
+				description:
+					"List modules available to the authenticated user using Vtiger's listtypes operation",
+			},
+		],
+		default: 'listTypes',
+	},
+	{
+		displayName: 'Operation',
+		name: 'operation',
+		type: 'options',
+		noDataExpression: true,
+		displayOptions: { show: { resource: ['record'] } },
+		options: [
+			{
+				name: 'Create',
+				value: 'create',
+				action: 'Create a record',
+				description: 'Create a record in a Vtiger module',
+			},
+			{
+				name: 'Delete',
+				value: 'delete',
+				action: 'Delete a record',
+				description: 'Delete a record by its Vtiger webservice ID',
+			},
+			{
+				name: 'Full Update',
+				value: 'update',
+				action: 'Update an entire record',
+				description:
+					"Update a record using Vtiger's update operation; provide every mandatory field and every current value that must be retained, or use Update Fields for a partial update",
+			},
+			{
+				name: 'Retrieve',
+				value: 'retrieve',
+				action: 'Retrieve a record',
+				description: 'Retrieve a record by its Vtiger webservice ID',
+			},
+			{
+				name: 'Update Fields',
+				value: 'revise',
+				action: 'Update selected fields in a record',
+				description:
+					"Update selected fields using Vtiger's revise operation; omitted fields remain unchanged",
+			},
+		],
+		default: 'retrieve',
+	},
+	{
+		displayName: 'Operation',
+		name: 'operation',
+		type: 'options',
+		noDataExpression: true,
+		displayOptions: { show: { resource: ['query'] } },
+		options: [
+			{
+				name: 'Guided VTQL Query',
+				value: 'getMany',
+				action: 'Run a guided VTQL query',
+				description:
+					'Generate and run SELECT * from separate module, condition, and ordering fields with controlled pagination',
+			},
+			{
+				name: 'Raw VTQL Query',
+				value: 'rawQuery',
+				action: 'Run a raw VTQL query',
+				description: 'Run a complete VTQL SELECT statement with controlled pagination',
+			},
+		],
+		default: 'getMany',
+	},
+	{
+		displayName: 'Operation',
+		name: 'operation',
+		type: 'options',
+		noDataExpression: true,
+		displayOptions: { show: { resource: ['relation'] } },
+		options: [
+			{
+				name: 'Add Related Record',
+				value: 'addRelated',
+				action: 'Add a related record',
+				description: 'Relate two existing Vtiger records using the add_related operation',
+			},
+			{
+				name: 'Retrieve Related Records',
+				value: 'retrieveRelated',
+				action: 'Retrieve related records',
+				description:
+					"Retrieve records from a related list using Vtiger's retrieve_related operation",
+			},
+			{
+				name: 'List Related Types',
+				value: 'listTypes',
+				action: 'List related types',
+				description:
+					"List the related types available for a module using Vtiger's relatedtypes operation",
+			},
+			{
+				name: 'Query Related Records',
+				value: 'queryRelated',
+				action: 'Query related records',
+				description:
+					"Run a VTQL query within a related list using Vtiger's query_related operation",
+			},
+		],
+		default: 'listTypes',
+	},
+	{
+		displayName:
+			"A Vtiger webservice ID consists of a numeric entity-type prefix, the letter x, and the numeric record ID, for example 11x42. Prefixes depend on the installation. Obtain IDs from this node's outputs: list accessible modules, query the relevant module, and use the returned ID or reference-field value. Numeric IDs in CRM URLs contain only the record-number part and are not complete webservice IDs.",
+		name: 'webserviceIdNotice',
+		type: 'notice',
+		default: '',
+		displayOptions: { show: { resource: ['document', 'lead', 'record', 'relation'] } },
+	},
+	{
+		displayName: 'Operation Name',
+		name: 'customOperation',
+		type: 'string',
+		default: '',
+		required: true,
+		placeholder: 'e.g. describe',
+		description: 'Exact operation name registered by the Vtiger installation',
+		displayOptions: { show: { resource: ['advanced'] } },
+	},
+	{
+		displayName: 'Parameters',
+		name: 'customParameters',
+		type: 'json',
+		default: '{}',
+		description:
+			'JSON object containing request parameters. Nested objects and arrays are sent as JSON-encoded parameter values.',
+		displayOptions: { show: { resource: ['advanced'] } },
+	},
+	{
+		displayName:
+			'Lead conversion requires an operation registration with one JSON-encoded element parameter. Some Vtiger installations retain an incompatible legacy registration. Vtiger creates the selected records sequentially, so a later failure can leave records created earlier while the Lead remains unconverted.',
+		name: 'leadCompatibilityWarning',
+		type: 'notice',
+		default: '',
+		displayOptions: { show: { resource: ['lead'], operation: ['convert'] } },
+	},
+	{
+		displayName: 'Lead ID',
+		name: 'leadId',
+		type: 'string',
+		default: '',
+		required: true,
+		placeholder: 'e.g. 123x456',
+		description:
+			'Full Vtiger webservice ID of the lead, including its installation-specific entity-type prefix',
+		displayOptions: { show: { resource: ['lead'], operation: ['convert'] } },
+	},
+	{
+		displayName: 'Assigned To ID',
+		name: 'assignedTo',
+		type: 'string',
+		default: '',
+		required: true,
+		placeholder: 'e.g. 123x456',
+		description:
+			'Full Vtiger webservice ID of the user or group assigned to the converted records, including its installation-specific entity-type prefix. You can reuse assigned_user_id from an accessible existing record.',
+		displayOptions: { show: { resource: ['lead'], operation: ['convert'] } },
+	},
+	{
+		displayName: 'Create Account',
+		name: 'createAccount',
+		type: 'boolean',
+		default: true,
+		description: 'Whether to create an account from the lead',
+		displayOptions: { show: { resource: ['lead'], operation: ['convert'] } },
+	},
+	{
+		displayName: 'Account Name',
+		name: 'accountName',
+		type: 'string',
+		default: '',
+		required: true,
+		placeholder: 'e.g. Example Corporation',
+		description: 'Name of the account to create',
+		displayOptions: {
+			show: { resource: ['lead'], operation: ['convert'], createAccount: [true] },
+		},
+	},
+	{
+		displayName: 'Account Additional Fields',
+		name: 'accountFields',
+		type: 'json',
+		default: '{}',
+		description: 'JSON object of additional Vtiger field names and values for the account',
+		displayOptions: {
+			show: { resource: ['lead'], operation: ['convert'], createAccount: [true] },
+		},
+	},
+	{
+		displayName: 'Create Contact',
+		name: 'createContact',
+		type: 'boolean',
+		default: true,
+		description: 'Whether to create a contact from the lead',
+		displayOptions: { show: { resource: ['lead'], operation: ['convert'] } },
+	},
+	{
+		displayName: 'Contact Last Name',
+		name: 'contactLastName',
+		type: 'string',
+		default: '',
+		required: true,
+		placeholder: 'e.g. Smith',
+		description: 'Last name of the contact to create',
+		displayOptions: {
+			show: { resource: ['lead'], operation: ['convert'], createContact: [true] },
+		},
+	},
+	{
+		displayName: 'Contact Additional Fields',
+		name: 'contactFields',
+		type: 'json',
+		default: '{}',
+		description: 'JSON object of additional Vtiger field names and values for the contact',
+		displayOptions: {
+			show: { resource: ['lead'], operation: ['convert'], createContact: [true] },
+		},
+	},
+	{
+		displayName: 'Create Potential',
+		name: 'createPotential',
+		type: 'boolean',
+		default: false,
+		description: 'Whether to create a potential from the lead',
+		displayOptions: { show: { resource: ['lead'], operation: ['convert'] } },
+	},
+	{
+		displayName: 'Potential Name',
+		name: 'potentialName',
+		type: 'string',
+		default: '',
+		required: true,
+		placeholder: 'e.g. Website Redesign',
+		description: 'Name of the potential to create',
+		displayOptions: {
+			show: { resource: ['lead'], operation: ['convert'], createPotential: [true] },
+		},
+	},
+	{
+		displayName: 'Potential Additional Fields',
+		name: 'potentialFields',
+		type: 'json',
+		default: '{}',
+		description:
+			'JSON object of additional Vtiger field names and values for the potential, including any other required fields',
+		displayOptions: {
+			show: { resource: ['lead'], operation: ['convert'], createPotential: [true] },
+		},
+	},
+	{
+		displayName: 'Transfer Related Records To',
+		name: 'transferRelatedRecordsTo',
+		type: 'options',
+		options: [
+			{ name: 'Account', value: 'Accounts' },
+			{ name: 'Contact', value: 'Contacts' },
+		],
+		default: 'Contacts',
+		description: 'Created record that receives records related to the original lead',
+		displayOptions: { show: { resource: ['lead'], operation: ['convert'] } },
+	},
+	{
+		displayName: 'Attachment Download ID',
+		name: 'attachmentId',
+		type: 'string',
+		default: '',
+		required: true,
+		placeholder: 'e.g. 123x456',
+		description:
+			'Full Vtiger webservice ID returned in imageattachmentids, including its installation-specific entity-type prefix. This is not the Document ID.',
+		displayOptions: { show: { resource: ['document'], operation: ['download'] } },
+	},
+	{
+		displayName: 'Binary Field',
+		name: 'binaryPropertyName',
+		type: 'string',
+		default: 'data',
+		required: true,
+		description:
+			'Name of the binary field containing the upload or receiving the downloaded attachment',
+		displayOptions: { show: { resource: ['document'] } },
+	},
+	{
+		displayName: 'Maximum File Size (MB)',
+		name: 'maximumFileSize',
+		type: 'number',
+		typeOptions: { minValue: 1, maxValue: 100 },
+		default: 25,
+		description: 'Maximum upload size or aggregate decoded download size in megabytes',
+		displayOptions: { show: { resource: ['document'] } },
+	},
+	{
+		displayName: 'Title',
+		name: 'documentTitle',
+		type: 'string',
+		default: '',
+		placeholder: 'e.g. Service Report',
+		description: 'Document title. Uses the binary file name when left empty.',
+		displayOptions: {
+			show: { resource: ['document'], operation: ['upload', 'uploadAndLink'] },
+		},
+	},
+	{
+		displayName: 'Assigned To ID',
+		name: 'assignedToId',
+		type: 'string',
+		default: '',
+		required: true,
+		placeholder: 'e.g. 123x456',
+		description:
+			'Full Vtiger webservice ID of the user or group assigned to the Document, including its installation-specific entity-type prefix. You can reuse assigned_user_id from an accessible existing record.',
+		displayOptions: {
+			show: { resource: ['document'], operation: ['upload', 'uploadAndLink'] },
+		},
+	},
+	{
+		displayName: 'Folder ID',
+		name: 'folderId',
+		type: 'string',
+		default: '',
+		required: true,
+		placeholder: 'e.g. 123x456',
+		description:
+			'Full Vtiger webservice ID of the Document folder, including its installation-specific entity-type prefix. Retrieve an existing Document and reuse its folderid value.',
+		displayOptions: {
+			show: { resource: ['document'], operation: ['upload', 'uploadAndLink'] },
+		},
+	},
+	{
+		displayName: 'File Status',
+		name: 'fileStatus',
+		type: 'boolean',
+		default: true,
+		description: 'Whether the Document is active',
+		displayOptions: {
+			show: { resource: ['document'], operation: ['upload', 'uploadAndLink'] },
+		},
+	},
+	{
+		displayName: 'Additional Fields',
+		name: 'documentFields',
+		type: 'json',
+		default: '{}',
+		description:
+			'JSON object of additional Documents module field names and values. Core upload fields cannot be overridden.',
+		displayOptions: {
+			show: { resource: ['document'], operation: ['upload', 'uploadAndLink'] },
+		},
+	},
+	{
+		displayName: 'Module Name',
+		name: 'elementType',
+		type: 'string',
+		default: '',
+		required: true,
+		placeholder: 'e.g. Contacts',
+		description: 'Exact Vtiger module name returned by List Accessible Modules',
+		displayOptions: {
+			show: {
+				resource: ['metadata', 'query', 'record'],
+				operation: ['describe', 'getMany', 'create'],
+			},
+		},
+	},
+	{
+		displayName: 'Module Name',
+		name: 'relationElementType',
+		type: 'string',
+		default: '',
+		required: true,
+		placeholder: 'e.g. Contacts',
+		description: 'Exact Vtiger module name returned by List Accessible Modules',
+		displayOptions: { show: { resource: ['relation'], operation: ['listTypes'] } },
+	},
+	{
+		displayName: 'Source Record ID',
+		name: 'sourceRecordId',
+		type: 'string',
+		default: '',
+		required: true,
+		placeholder: 'e.g. 123x456',
+		description:
+			'Full Vtiger webservice ID of the record from which the related record is added, including its installation-specific entity-type prefix',
+		displayOptions: {
+			show: {
+				resource: ['document', 'relation'],
+				operation: ['addRelated', 'uploadAndLink'],
+			},
+		},
+	},
+	{
+		displayName: 'Related Record ID',
+		name: 'relatedRecordId',
+		type: 'string',
+		default: '',
+		required: true,
+		placeholder: 'e.g. 123x456',
+		description:
+			'Full Vtiger webservice ID of the record to relate, including its installation-specific entity-type prefix',
+		displayOptions: { show: { resource: ['relation'], operation: ['addRelated'] } },
+	},
+	{
+		displayName: 'Related Module Name',
+		name: 'relatedType',
+		type: 'string',
+		default: '',
+		required: true,
+		placeholder: 'e.g. Contacts',
+		description: 'Exact related module name returned by List Related Types',
+		displayOptions: { show: { resource: ['relation'], operation: ['retrieveRelated'] } },
+	},
+	{
+		displayName: 'Related List Label',
+		name: 'relationLabel',
+		type: 'string',
+		default: '',
+		required: true,
+		description: 'Exact related-list label or relation ID returned by List Related Types',
+		displayOptions: {
+			show: {
+				resource: ['document', 'relation'],
+				operation: ['addRelated', 'queryRelated', 'retrieveRelated', 'uploadAndLink'],
+			},
+		},
+	},
+	{
+		displayName: 'VTQL Query',
+		name: 'relatedQuery',
+		type: 'string',
+		typeOptions: { rows: 4 },
+		default: '',
+		required: true,
+		placeholder: 'e.g. SELECT * FROM Contacts',
+		description:
+			'VTQL SELECT query for the exact module returned by List Related Types. A trailing semicolon is removed for Vtiger compatibility; LIMIT is passed through unchanged.',
+		displayOptions: { show: { resource: ['relation'], operation: ['queryRelated'] } },
+	},
+	{
+		displayName: 'Record ID',
+		name: 'recordId',
+		type: 'string',
+		default: '',
+		required: true,
+		placeholder: 'e.g. 123x456',
+		description:
+			'Full Vtiger webservice ID of the record, including its installation-specific entity-type prefix. For related-record operations, this is the parent record whose related list is accessed.',
+		displayOptions: {
+			show: {
+				resource: ['record', 'relation'],
+				operation: ['delete', 'queryRelated', 'retrieve', 'retrieveRelated', 'revise', 'update'],
+			},
+		},
+	},
+	{
+		displayName: 'Fields',
+		name: 'fields',
+		type: 'json',
+		default: '{}',
+		required: true,
+		description:
+			'JSON object of Vtiger field names and values. Create and Full Update must include all mandatory fields. Update Fields sends only the selected fields using revise. Record ID overrides any ID in this object.',
+		displayOptions: { show: { resource: ['record'], operation: ['create', 'revise', 'update'] } },
+	},
+	{
+		displayName: 'Condition',
+		name: 'condition',
+		type: 'string',
+		default: '',
+		placeholder: "e.g. lastname = 'Smith'",
+		description: 'Optional VTQL condition without WHERE, ORDER BY, LIMIT, or a trailing semicolon',
+		displayOptions: { show: { resource: ['query'], operation: ['getMany'] } },
+	},
+	{
+		displayName: 'Order By',
+		name: 'orderBy',
+		type: 'string',
+		default: 'id',
+		required: true,
+		description: 'Field used for deterministic pagination',
+		displayOptions: { show: { resource: ['query'], operation: ['getMany'] } },
+	},
+	{
+		displayName: 'VTQL Query',
+		name: 'query',
+		type: 'string',
+		typeOptions: { rows: 4 },
+		default: '',
+		required: true,
+		placeholder: 'e.g. SELECT * FROM Contacts ORDER BY id;',
+		description:
+			'The VTQL SELECT statement. Set the maximum result count with the Limit field below; the node adds the corresponding LIMIT clause. Include ORDER BY for deterministic pagination.',
+		displayOptions: { show: { resource: ['query'], operation: ['rawQuery'] } },
+	},
+	{
+		displayName: 'Return All',
+		name: 'returnAll',
+		type: 'boolean',
+		default: false,
+		description: 'Whether to return all results or only up to a given limit',
+		displayOptions: { show: { resource: ['query'] } },
+	},
+	{
+		displayName: 'Limit',
+		name: 'limit',
+		type: 'number',
+		typeOptions: { minValue: 1 },
+		default: 50,
+		description: 'Max number of results to return',
+		displayOptions: { show: { resource: ['query'], returnAll: [false] } },
+	},
+	{
+		displayName: 'Page Size',
+		name: 'pageSize',
+		type: 'number',
+		typeOptions: { minValue: 1, maxValue: 100 },
+		default: 100,
+		description: 'Number of records requested per Vtiger API call',
+		displayOptions: { show: { resource: ['query'] } },
+	},
+];

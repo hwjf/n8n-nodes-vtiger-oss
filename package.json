@@ -1,0 +1,67 @@
+{
+	"name": "n8n-nodes-vtiger-oss",
+	"version": "0.1.0",
+	"description": "n8n community node for Vtiger CRM Open Source 8.x",
+	"license": "MIT",
+	"homepage": "https://github.com/hwjf/n8n-nodes-vtiger-oss#readme",
+	"keywords": [
+		"n8n-community-node-package",
+		"n8n",
+		"vtiger",
+		"vtiger-crm"
+	],
+	"author": {
+		"name": "hwjf",
+		"email": "hwjf@users.noreply.github.com"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/hwjf/n8n-nodes-vtiger-oss.git"
+	},
+	"bugs": {
+		"url": "https://github.com/hwjf/n8n-nodes-vtiger-oss/issues"
+	},
+	"engines": {
+		"node": "^22.22 || ^24.0"
+	},
+	"scripts": {
+		"build": "n8n-node build",
+		"build:watch": "tsc --watch",
+		"dev": "n8n-node dev",
+		"format": "prettier --write .",
+		"format:check": "prettier --check .",
+		"lint": "n8n-node lint",
+		"lint:fix": "n8n-node lint --fix",
+		"release": "n8n-node release",
+		"prepublishOnly": "n8n-node prerelease",
+		"test": "tsx --test test/unit/**/*.test.ts",
+		"test:coverage": "node --import tsx --test --experimental-test-coverage --test-coverage-lines=80 --test-reporter=spec --test-reporter-destination=stdout --test-reporter=lcov --test-reporter-destination=coverage.lcov test/unit/**/*.test.ts",
+		"test:integration": "tsx --env-file=.env --test --test-concurrency=1 test/integration/**/*.test.ts"
+	},
+	"files": [
+		"dist",
+		"examples",
+		"THIRD_PARTY_NOTICES.md"
+	],
+	"n8n": {
+		"n8nNodesApiVersion": 1,
+		"strict": true,
+		"credentials": [
+			"dist/credentials/VtigerOssApi.credentials.js"
+		],
+		"nodes": [
+			"dist/nodes/VtigerOss/VtigerOss.node.js"
+		]
+	},
+	"devDependencies": {
+		"@n8n/node-cli": "0.44.4",
+		"eslint": "9.39.4",
+		"prettier": "3.8.3",
+		"release-it": "20.2.0",
+		"tsx": "4.23.12",
+		"typescript": "5.9.3"
+	},
+	"peerDependencies": {
+		"n8n-workflow": "*"
+	}
+}
