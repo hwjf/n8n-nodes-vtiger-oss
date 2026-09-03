@@ -28,4 +28,4 @@ jobs:
       - run: npm run test:coverage
       - run: npm run build
       - run: npm pack --dry-run --json
-      - run: npm publish --access public
+      - run: npm stage publish
