@@ -21,7 +21,7 @@ test('credential definition exposes a declarative connection test', () => {
 				properties: {
 					message: 'Vtiger rejected the username or base URL',
 					key: 'success',
-					value: true,
+					value: false,
 				},
 			},
 		],

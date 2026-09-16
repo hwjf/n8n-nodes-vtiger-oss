@@ -64,7 +64,7 @@ export class VtigerOssApi implements ICredentialType {
 				properties: {
 					message: 'Vtiger rejected the username or base URL',
 					key: 'success',
-					value: true,
+					value: false,
 				},
 			},
 		],
