@@ -8,12 +8,11 @@ import { testVtigerCredentials } from '../../nodes/VtigerOss/transport/credentia
 test('credential definition exposes a declarative connection test', () => {
 	assert.deepEqual(new VtigerOssApi().test, {
 		request: {
-			baseURL: '={{$credentials.baseUrl}}',
-			url: '/webservice.php',
+			url: '={{$credentials.baseUrl.trim().replace(/\\/+$/, "") + "/webservice.php"}}',
 			method: 'GET',
 			qs: {
 				operation: 'getchallenge',
-				username: '={{$credentials.username}}',
+				username: '={{$credentials.username.trim()}}',
 			},
 		},
 		rules: [
