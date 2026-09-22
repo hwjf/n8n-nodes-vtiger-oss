@@ -57,7 +57,7 @@ export class VtigerOss implements INodeType {
 				const operation = this.getNodeParameter('operation', itemIndex) as string;
 				const result = await routeAction({ context: this, client, itemIndex });
 				const outputMode = actionSupportsOutput(resource, operation)
-					? (this.getNodeParameter('output', itemIndex, 'simplified') as OutputMode)
+					? (this.getNodeParameter('output', itemIndex, 'raw') as OutputMode)
 					: 'raw';
 				const selectedFields =
 					outputMode === 'selected'

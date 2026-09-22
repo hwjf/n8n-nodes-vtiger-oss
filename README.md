@@ -14,13 +14,13 @@ The names below match what you see in n8n.
 
 | Resource           | Operations                                                                              |
 | ------------------ | --------------------------------------------------------------------------------------- |
-| **Advanced**       | Custom GET, Custom POST                                                                 |
+| **Record**         | Create, Retrieve, Update Fields, Full Update, Delete                                    |
+| **Query**          | Raw VTQL Query, Guided VTQL Query                                                       |
+| **Module**         | List Accessible Modules, Describe Module                                                |
 | **Document**       | Download Attachment, Upload, Upload and Link to Record                                  |
+| **Related Record** | List Related Types, Retrieve Related Records, Add Related Record, Query Related Records |
 | **Lead**           | Convert                                                                                 |
-| **Module**         | Describe Module, List Accessible Modules                                                |
-| **Query**          | Guided VTQL Query, Raw VTQL Query                                                       |
-| **Record**         | Create, Delete, Full Update, Retrieve, Update Fields                                    |
-| **Related Record** | Add Related Record, List Related Types, Query Related Records, Retrieve Related Records |
+| **Advanced**       | Custom GET, Custom POST                                                                 |
 
 Records are referenced by their full Vtiger webservice ID in the form
 `<entity-type-prefix>x<record-number>`, for example `11x123`. The prefix depends on the
@@ -45,9 +45,9 @@ After a successful **Delete**, the node returns `{ "deleted": true }`.
 
 Actions that return records or metadata provide three output modes:
 
-- **Simplified** is the default. It returns up to ten top-level fields and prioritizes common
-  identity fields such as `id`, names, labels, and email addresses.
-- **Raw** returns every top-level field provided by Vtiger.
+- **Raw** is the default. It returns every top-level field provided by Vtiger.
+- **Simplified** returns up to ten top-level fields and prioritizes common identity fields such as
+  `id`, names, labels, and email addresses.
 - **Selected Fields** returns only the comma-separated top-level fields you request.
 
 Each record in a list remains a separate n8n item. File downloads and action confirmations are not

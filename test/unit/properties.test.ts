@@ -97,14 +97,14 @@ const handlerParameters: Record<string, string[]> = {
 };
 
 test('exposes partial and full updates under the record resource', () => {
-	assert.deepEqual(operationValues('record'), ['create', 'delete', 'update', 'retrieve', 'revise']);
+	assert.deepEqual(operationValues('record'), ['create', 'retrieve', 'revise', 'update', 'delete']);
 });
 
 test('exposes the registered relation operations', () => {
 	assert.deepEqual(operationValues('relation'), [
-		'addRelated',
-		'retrieveRelated',
 		'listTypes',
+		'retrieveRelated',
+		'addRelated',
 		'queryRelated',
 	]);
 });
@@ -131,6 +131,7 @@ test('defines every parameter read by each action handler', () => {
 });
 
 test('hides module name when listing accessible metadata modules', () => {
+	assert.deepEqual(operationValues('metadata'), ['listTypes', 'describe']);
 	assert.equal(hasProperty('metadata', 'listTypes', 'elementType'), false);
 	assert.equal(hasProperty('relation', 'listTypes', 'relationElementType'), true);
 });
@@ -213,6 +214,7 @@ test('explains how to obtain installation-specific webservice IDs', () => {
 });
 
 test('distinguishes guided and raw VTQL queries', () => {
+	assert.deepEqual(operationValues('query'), ['rawQuery', 'getMany']);
 	const operations = actionProperties.find(
 		(property) =>
 			property.name === 'operation' && property.displayOptions?.show?.resource?.includes('query'),
@@ -265,13 +267,13 @@ test('uses Vtiger terminology for visible resources and related-record operation
 		resources.map((option) => [String('value' in option ? option.value : ''), option.name]),
 	);
 	assert.deepEqual(Object.keys(resourceNames), [
-		'advanced',
-		'document',
-		'lead',
-		'metadata',
-		'query',
 		'record',
+		'query',
+		'metadata',
+		'document',
 		'relation',
+		'lead',
+		'advanced',
 	]);
 	assert.equal(resourceNames.document, 'Document');
 	assert.equal(resourceNames.metadata, 'Module');
@@ -325,10 +327,10 @@ test('exposes all operations to AI tools', () => {
 
 test('offers controlled output for actions that can return large records', () => {
 	const output = actionProperties.find((property) => property.name === 'output');
-	assert.equal(output?.default, 'simplified');
+	assert.equal(output?.default, 'raw');
 	assert.deepEqual(
 		output?.options?.map((option) => ('value' in option ? option.value : undefined)),
-		['simplified', 'raw', 'selected'],
+		['raw', 'simplified', 'selected'],
 	);
 	assert.equal(hasProperty('record', 'retrieve', 'output'), true);
 	assert.equal(hasProperty('query', 'rawQuery', 'output'), true);

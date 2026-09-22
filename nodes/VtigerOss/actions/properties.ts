@@ -6,14 +6,16 @@ export const actionProperties: INodeProperties[] = [
 		name: 'resource',
 		type: 'options',
 		noDataExpression: true,
+		// Resources are intentionally ordered by usage frequency rather than alphabetically.
+		// eslint-disable-next-line n8n-nodes-base/node-param-options-type-unsorted-items
 		options: [
-			{ name: 'Advanced', value: 'advanced' },
-			{ name: 'Document', value: 'document' },
-			{ name: 'Lead', value: 'lead' },
-			{ name: 'Module', value: 'metadata' },
-			{ name: 'Query', value: 'query' },
 			{ name: 'Record', value: 'record' },
+			{ name: 'Query', value: 'query' },
+			{ name: 'Module', value: 'metadata' },
+			{ name: 'Document', value: 'document' },
 			{ name: 'Related Record', value: 'relation' },
+			{ name: 'Lead', value: 'lead' },
+			{ name: 'Advanced', value: 'advanced' },
 		],
 		default: 'record',
 	},
@@ -94,18 +96,18 @@ export const actionProperties: INodeProperties[] = [
 		displayOptions: { show: { resource: ['metadata'] } },
 		options: [
 			{
-				name: 'Describe Module',
-				value: 'describe',
-				action: 'Describe a module',
-				description:
-					"Get field and capability metadata for a module using Vtiger's describe operation",
-			},
-			{
 				name: 'List Accessible Modules',
 				value: 'listTypes',
 				action: 'List accessible modules',
 				description:
 					"List modules available to the authenticated user using Vtiger's listtypes operation",
+			},
+			{
+				name: 'Describe Module',
+				value: 'describe',
+				action: 'Describe a module',
+				description:
+					"Get field and capability metadata for a module using Vtiger's describe operation",
 			},
 		],
 		default: 'listTypes',
@@ -116,25 +118,14 @@ export const actionProperties: INodeProperties[] = [
 		type: 'options',
 		noDataExpression: true,
 		displayOptions: { show: { resource: ['record'] } },
+		// Record operations are intentionally ordered by usage frequency rather than alphabetically.
+		// eslint-disable-next-line n8n-nodes-base/node-param-options-type-unsorted-items
 		options: [
 			{
 				name: 'Create',
 				value: 'create',
 				action: 'Create a record',
 				description: 'Create a record in a Vtiger module',
-			},
-			{
-				name: 'Delete',
-				value: 'delete',
-				action: 'Delete a record',
-				description: 'Delete a record by its Vtiger webservice ID',
-			},
-			{
-				name: 'Full Update',
-				value: 'update',
-				action: 'Update an entire record',
-				description:
-					"Update a record using Vtiger's update operation; provide every mandatory field and every current value that must be retained, or use Update Fields for a partial update",
 			},
 			{
 				name: 'Retrieve',
@@ -149,6 +140,19 @@ export const actionProperties: INodeProperties[] = [
 				description:
 					"Update selected fields using Vtiger's revise operation; omitted fields remain unchanged",
 			},
+			{
+				name: 'Full Update',
+				value: 'update',
+				action: 'Update an entire record',
+				description:
+					"Update a record using Vtiger's update operation; provide every mandatory field and every current value that must be retained, or use Update Fields for a partial update",
+			},
+			{
+				name: 'Delete',
+				value: 'delete',
+				action: 'Delete a record',
+				description: 'Delete a record by its Vtiger webservice ID',
+			},
 		],
 		default: 'retrieve',
 	},
@@ -160,17 +164,17 @@ export const actionProperties: INodeProperties[] = [
 		displayOptions: { show: { resource: ['query'] } },
 		options: [
 			{
+				name: 'Raw VTQL Query',
+				value: 'rawQuery',
+				action: 'Run a raw VTQL query',
+				description: 'Run a complete VTQL SELECT statement with controlled pagination',
+			},
+			{
 				name: 'Guided VTQL Query',
 				value: 'getMany',
 				action: 'Run a guided VTQL query',
 				description:
 					'Generate and run SELECT * from separate module, condition, and ordering fields with controlled pagination',
-			},
-			{
-				name: 'Raw VTQL Query',
-				value: 'rawQuery',
-				action: 'Run a raw VTQL query',
-				description: 'Run a complete VTQL SELECT statement with controlled pagination',
 			},
 		],
 		default: 'getMany',
@@ -183,10 +187,11 @@ export const actionProperties: INodeProperties[] = [
 		displayOptions: { show: { resource: ['relation'] } },
 		options: [
 			{
-				name: 'Add Related Record',
-				value: 'addRelated',
-				action: 'Add a related record',
-				description: 'Relate two existing Vtiger records using the add_related operation',
+				name: 'List Related Types',
+				value: 'listTypes',
+				action: 'List related types',
+				description:
+					"List the related types available for a module using Vtiger's relatedtypes operation",
 			},
 			{
 				name: 'Retrieve Related Records',
@@ -196,11 +201,10 @@ export const actionProperties: INodeProperties[] = [
 					"Retrieve records from a related list using Vtiger's retrieve_related operation",
 			},
 			{
-				name: 'List Related Types',
-				value: 'listTypes',
-				action: 'List related types',
-				description:
-					"List the related types available for a module using Vtiger's relatedtypes operation",
+				name: 'Add Related Record',
+				value: 'addRelated',
+				action: 'Add a related record',
+				description: 'Relate two existing Vtiger records using the add_related operation',
 			},
 			{
 				name: 'Query Related Records',
@@ -636,14 +640,14 @@ export const actionProperties: INodeProperties[] = [
 		type: 'options',
 		options: [
 			{
-				name: 'Simplified',
-				value: 'simplified',
-				description: 'Return up to 10 top-level fields, prioritizing common identity fields',
-			},
-			{
 				name: 'Raw',
 				value: 'raw',
 				description: 'Return the complete Vtiger response',
+			},
+			{
+				name: 'Simplified',
+				value: 'simplified',
+				description: 'Return up to 10 top-level fields, prioritizing common identity fields',
 			},
 			{
 				name: 'Selected Fields',
@@ -651,7 +655,7 @@ export const actionProperties: INodeProperties[] = [
 				description: 'Return only the top-level fields named below',
 			},
 		],
-		default: 'simplified',
+		default: 'raw',
 		description: 'How much data to return for each result',
 		displayOptions: {
 			show: {
