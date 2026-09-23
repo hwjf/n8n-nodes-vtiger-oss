@@ -19,19 +19,6 @@ const OUTPUT_ACTIONS = new Set([
 	'relation.retrieveRelated',
 ]);
 
-const PREFERRED_FIELDS = [
-	'id',
-	'label',
-	'name',
-	'firstname',
-	'lastname',
-	'email',
-	'phone',
-	'assigned_user_id',
-	'createdtime',
-	'modifiedtime',
-];
-
 export function actionSupportsOutput(resource: string, operation: string): boolean {
 	return OUTPUT_ACTIONS.has(`${resource}.${operation}`);
 }
@@ -66,7 +53,8 @@ export function formatOutput(
 	if (mode !== 'simplified') throw new VtigerApiError('Output mode is invalid', 'output');
 
 	const keys = Object.keys(data);
-	const preferred = PREFERRED_FIELDS.filter((field) => keys.includes(field));
-	const remaining = keys.filter((field) => !preferred.includes(field));
-	return selectFields(data, [...preferred, ...remaining].slice(0, 10));
+	const previewFields = keys.includes('id')
+		? ['id', ...keys.filter((field) => field !== 'id')]
+		: keys;
+	return selectFields(data, previewFields.slice(0, 10));
 }

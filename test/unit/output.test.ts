@@ -7,7 +7,7 @@ import {
 	parseSelectedFields,
 } from '../../nodes/VtigerOss/helpers/output';
 
-test('simplifies output to ten fields while prioritizing identity fields', () => {
+test('previews ten fields with ID first and remaining fields in response order', () => {
 	const data: Record<string, unknown> = Object.fromEntries(
 		Array.from({ length: 12 }, (_, index) => [`custom_${index + 1}`, index + 1]),
 	);
@@ -16,7 +16,6 @@ test('simplifies output to ten fields while prioritizing identity fields', () =>
 
 	assert.deepEqual(Object.keys(formatOutput(data, 'simplified')), [
 		'id',
-		'lastname',
 		'custom_1',
 		'custom_2',
 		'custom_3',
@@ -25,6 +24,11 @@ test('simplifies output to ten fields while prioritizing identity fields', () =>
 		'custom_6',
 		'custom_7',
 		'custom_8',
+		'custom_9',
+	]);
+	assert.deepEqual(Object.keys(formatOutput({ first: 1, second: 2 }, 'simplified')), [
+		'first',
+		'second',
 	]);
 });
 

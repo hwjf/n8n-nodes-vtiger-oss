@@ -100,6 +100,16 @@ test('exposes partial and full updates under the record resource', () => {
 	assert.deepEqual(operationValues('record'), ['create', 'retrieve', 'revise', 'update', 'delete']);
 });
 
+test('labels simplified output as a preview', () => {
+	const output = actionProperties.find((property) => property.name === 'output');
+	const preview = output?.options?.find(
+		(option) => 'value' in option && option.value === 'simplified',
+	);
+
+	assert.equal(preview?.name, 'Preview');
+	assert.match(String(preview?.description), /original Vtiger response order/);
+});
+
 test('exposes the registered relation operations', () => {
 	assert.deepEqual(operationValues('relation'), [
 		'listTypes',

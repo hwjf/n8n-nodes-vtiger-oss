@@ -645,9 +645,10 @@ export const actionProperties: INodeProperties[] = [
 				description: 'Return the complete Vtiger response',
 			},
 			{
-				name: 'Simplified',
+				name: 'Preview',
 				value: 'simplified',
-				description: 'Return up to 10 top-level fields, prioritizing common identity fields',
+				description:
+					'Return the ID first when available, followed by fields in their original Vtiger response order, up to 10 top-level fields in total',
 			},
 			{
 				name: 'Selected Fields',

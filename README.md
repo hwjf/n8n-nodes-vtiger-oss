@@ -46,8 +46,8 @@ After a successful **Delete**, the node returns `{ "deleted": true }`.
 Actions that return records or metadata provide three output modes:
 
 - **Raw** is the default. It returns every top-level field provided by Vtiger.
-- **Simplified** returns up to ten top-level fields and prioritizes common identity fields such as
-  `id`, names, labels, and email addresses.
+- **Preview** returns up to ten top-level fields. It places `id` first when available, then keeps
+  the remaining fields in their original Vtiger response order.
 - **Selected Fields** returns only the comma-separated top-level fields you request.
 
 Each record in a list remains a separate n8n item. File downloads and action confirmations are not
